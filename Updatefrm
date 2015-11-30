@@ -1,0 +1,76 @@
+Imports System.Data
+Imports System.Data.OleDb
+Public Class Updatefrm
+    Dim con As New OleDbConnection("Provider= Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\p\Desktop\ADO1.accdb")
+    Private Sub Updatefrm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim adp As New OleDbDataAdapter("Select * from StudentDetails", con)
+        Dim ds As New DataSet()
+        adp.Fill(ds, "StudentDetails")
+        '  Dim dt As New DataTable()
+        ' dt = ds.Tables(0)
+        ComboBox2.DataSource = ds.Tables(0).DefaultView
+        ComboBox2.DisplayMember = "StudRoll"
+        ComboBox2.ValueMember = "StudRoll"
+    End Sub
+
+    Private Sub ComboBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox2.SelectedIndexChanged
+        Try
+            Dim adp1 As New OleDbDataAdapter("Select * from StudentDetails where StudRoll='" + ComboBox2.Text + "'", con)
+            Dim ds1 As New DataSet()
+            adp1.Fill(ds1, "StudentDetails")
+            Dim dt As New DataTable()
+            dt = ds1.Tables(0)
+            Dim dr As DataRow
+            dr = dt.Rows(0)
+
+            TextBox2.Text = dr(1).ToString()
+            RichTextBox1.Text = dr(2).ToString()
+            TextBox3.Text = dr(3).ToString()
+            TextBox4.Text = dr(4).ToString()
+            TextBox5.Text = dr(5).ToString()
+            TextBox6.Text = dr(6).ToString()
+            TextBox7.Text = dr(7).ToString()
+            ComboBox1.Text = dr(8).ToString()
+
+        Catch ex As Exception
+
+        End Try
+
+
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+        TextBox2.Enabled = True
+        TextBox3.Enabled = True
+        TextBox4.Enabled = True
+        TextBox5.Enabled = True
+        TextBox6.Enabled = True
+        ComboBox1.Enabled = True
+    End Sub
+
+    Private Sub TextBox6_Leave(sender As Object, e As EventArgs) Handles TextBox6.Leave
+        Dim totalfee, feepaid As Integer
+        totalfee = Convert.ToInt32(TextBox5.Text)
+        feepaid = Convert.ToInt32(TextBox6.Text)
+        TextBox7.Text = (totalfee - feepaid).ToString()
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Dim nm, add, cont, email, tfees, paidfee, pendfee, status As String
+        nm = TextBox2.Text
+        add = RichTextBox1.Text
+        cont = TextBox3.Text
+        email = TextBox4.Text
+        tfees = TextBox5.Text
+        paidfee = TextBox6.Text
+        pendfee = TextBox7.Text
+        status = ComboBox1.Text
+        con.Open()
+        Dim cmd As New OleDbCommand(("Update StudentDetails set StudName='" + nm + "',StudAddress='" + add + "',StudContact='" + cont + "',EmailID='" + email + "',TotalFees='" + tfees + "',FeesPaid ='" + paidfee + "',PendingFee='" + pendfee + "',Status='" + status + "'WHERE StudRoll='" + ComboBox2.Text + "'"), con)
+        Dim i As Integer
+        i = cmd.ExecuteNonQuery()
+        MessageBox.Show(i.ToString() & "Record/s Updated")
+        con.Close()
+    End Sub
+End Class
