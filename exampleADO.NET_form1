@@ -1,0 +1,27 @@
+Imports System.Data
+Imports System.Data.OleDb
+Public Class Form1
+    Dim con As New OleDbConnection("Provider= Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\p\Desktop\ADO1.accdb")
+    Dim username, pass As String
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        username = TextBox1.Text
+        pass = TextBox2.Text
+        con.Open()
+        Dim cmd As New OleDbCommand(("Select * from LoginTable where Username='" + username + "' and password='" + pass + "'"), con)
+        Dim adp As New OleDbDataAdapter
+        Dim ds As New DataSet
+        adp.SelectCommand = cmd
+        cmd.ExecuteNonQuery()
+        ds.Clear()
+        adp.Fill(ds, "LoginTable")
+        If (ds.Tables(0).Rows.Count > 0) Then
+            Dim f2 As New MainFR()
+            Me.Hide()
+            f2.Show()
+            con.Close()
+        Else
+            MessageBox.Show("Sorry Invalid Username or Password")
+            con.Close()
+        End If
+    End Sub
+End Class
