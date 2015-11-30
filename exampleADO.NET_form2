@@ -1,0 +1,34 @@
+Imports System.Data
+Imports System.Data.OleDb
+Public Class Form2
+    Dim con As New OleDbConnection("Provider= Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\p\Desktop\ADO1.accdb")
+    Dim rollno, nm, add, cont, email, tfee, pendfee, paidfee, status As String
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        rollno = TextBox1.Text
+        nm = TextBox2.Text
+        add = RichTextBox1.Text
+        cont = TextBox3.Text
+        email = TextBox4.Text
+        tfee = TextBox5.Text
+        pendfee = TextBox6.Text
+        paidfee = TextBox7.Text
+        status = ComboBox1.Text
+        con.Open()
+        Dim cmd As New OleDbCommand(("Insert into StudentDetails values ('" + rollno + "','" + nm + "','" + add + "','" + cont + "','" + email + "','" + tfee + "','" + pendfee + "','" + paidfee + "','" + status + "')"), con)
+        Dim i As Integer
+        i = cmd.ExecuteNonQuery()
+        MessageBox.Show(i.ToString() & "Record/s Inserted")
+        con.Close()
+    End Sub
+
+    Private Sub TextBox6_Leave(sender As Object, e As EventArgs) Handles TextBox6.Leave
+        Dim totalfee, feepaid As Integer
+        totalfee = Convert.ToInt32(TextBox5.Text)
+        feepaid = Convert.ToInt32(TextBox6.Text)
+        TextBox7.Text = (totalfee - feepaid).ToString()
+    End Sub
+
+    Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+End Class
